@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-center my-4">
-    
+    <a class="navbar-brand" href="{{url_for('noteEditor')}}">
         <div class="card text-center shadow-sm" style="width: 18rem;">
             <div class="card-body">
                 <img src="{{ url_for('static', filename='add.png') }}" alt="Add Note"
@@ -13,6 +13,7 @@
                 <h5 class="card-title">Add New Note</h5>
             </div>
         </div>
+    </a>
 </div>
 
 <div class="container">
