@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,flash
+from flask import Flask,render_template,request,flash,redirect,url_for
 from datetime import datetime,timezone
 from flask_sqlalchemy import SQLAlchemy
 
@@ -23,7 +23,8 @@ with app.app_context():
 
 @app.route('/')
 def main_page():
-    return render_template('main_page.html')
+    notes = Note.query.all()
+    return render_template('main_page.html',notes=notes)
 
 @app.route('/register')
 def register():
@@ -39,7 +40,7 @@ def noteEditor():
         db.session.add(new_note)
         db.session.commit()
         flash("Changes to note saved successfully", "success")
-        return render_template('main_page.html')
+        return redirect(url_for('main_page'))
     return render_template('note-editor.html')
 
 if __name__ == "__main__":
