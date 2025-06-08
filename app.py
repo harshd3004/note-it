@@ -30,7 +30,7 @@ def main_page():
 def register():
     return render_template('register.html')
 
-@app.route('/note-editor',methods=['GET','POST'])
+@app.route('/note-editor/',methods=['GET','POST'])
 def noteEditor():
     if request.method == "POST":
         title = request.form['title']
@@ -42,6 +42,14 @@ def noteEditor():
         flash("Changes to note saved successfully", "success")
         return redirect(url_for('main_page'))
     return render_template('note-editor.html')
+
+@app.route('/delete-note/<int:id>')
+def delete_note(id):
+    note = Note.query.get_or_404(id)
+    db.session.delete(note)
+    db.session.commit()
+    flash("Note deleted successfully!", "success")
+    return redirect(url_for('main_page'))
 
 if __name__ == "__main__":
     app.run(debug=True)
