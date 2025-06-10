@@ -16,6 +16,15 @@
 {% endblock %}
 
 {% block content %}
+{% if not current_user.is_authenticated %}
+    <div class="d-flex justify-content-center align-items-center text-center bg-light border rounded shadow-sm p-4 my-4 fade-in">
+        <div>
+            <h5 class="mb-2">Login Required</h5>
+            <p class="mb-0"><a href="{{ url_for('login') }}">Login</a> to keep your notes saved and accessible anytime</p>
+        </div>
+    </div>
+{% else %}
+
 <div class="d-flex justify-content-center my-4">
     <a class="navbar-brand" href="{{url_for('noteEditor')}}">
         <div class="card text-center shadow-sm" style="width: 18rem;">
@@ -30,34 +39,42 @@
 </div>
 
 <div class="container">
+    {% if notes %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        {% if notes %}
-            {% for note in notes %}
-            <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5 class="card-title">{{note.title}}</h5>
-                                <p class="card-text text-multiline">
-                                    {{ note.content.replace('\n', '<br>') | safe }}
-                                </p>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted cursor-default"> Modified : {{ note.time_modified.strftime('%Y-%m-%d %H:%M') }}</small>
-                                <div class="d-flex">
-                                    <a href="{{url_for('noteEditor',note_id=note.id)}}">
-                                        <button class="btn btn-outline-dark btn-sm" title="edit">&#9998;</button>
-                                    </a>
-                                    <a href="{{url_for('delete_note',id=note.id)}}">
-                                        <button class="btn btn-outline-dark btn-sm ms-2" title="delete">&#128465</button>
-                                    </a>
-                                </div>
-                            </div>
+        {% for note in notes %}
+        <div class="col note-card">
+            <div class="card h-100 shadow-sm fade-in">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div style="cursor: default;">
+                        <h5 class="card-title"><span class="note-title">{{note.title or 'Untitled'}}</span></h5>
+                        <p class="card-text text-multiline">
+                            <span class="note-content">{{ note.content.replace('\n', '<br>') | safe }}</span>
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted" style="cursor: default;"> Modified : {{ note.time_modified.strftime('%Y-%m-%d %H:%M') }}</small>
+                        <div class="d-flex">
+                            <a href="{{url_for('noteEditor',note_id=note.id)}}">
+                                <button class="btn btn-outline-dark btn-sm" title="edit">&#9998;</button>
+                            </a>
+                            <a href="{{url_for('delete_note',id=note.id)}}">
+                                <button class="btn btn-outline-dark btn-sm ms-2" title="delete">&#128465</button>
+                            </a>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        {% endif%}
+            </div>
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center text-center text-muted fade-in" style="height: 200px;">
+        <div>
+            <h5>No notes to display</h5>
+            <p>Add a new note to get started</p>
+        </div>
+    </div>
+    {% endif%}
 </div>
+{% endif %}
 {% endblock %}
